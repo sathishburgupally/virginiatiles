@@ -5,8 +5,6 @@ import requests
 from flask import Flask, jsonify, request
 import flask
 import os
-from dotenv import load_dotenv
-
 df =  pd.read_csv("final2.csv")
 df1 = df.copy()
 app = Flask(__name__)
