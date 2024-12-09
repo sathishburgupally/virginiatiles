@@ -1,10 +1,7 @@
 flask
-langchain
-langchain-community
 pymupdf
 pandas
 numpy
 requests
-langchain_openai
 openpyxl
 openai
