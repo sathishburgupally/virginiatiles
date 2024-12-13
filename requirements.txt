@@ -5,3 +5,4 @@ requests
 openpyxl
 openai
 dotenv-python
+flask-cors
