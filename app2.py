@@ -6,10 +6,11 @@ from flask import Flask, jsonify, request
 import flask
 import os
 import json
+from flask_cors import CORS
 df =  pd.read_csv("final3.csv")
 df1 = df.copy()
 app = Flask(__name__)
-
+CORS(app) 
 key  =os.environ.get("OPENAI_API_KEY")
 
 template  = '''
