@@ -5,6 +5,7 @@ import requests
 from flask import Flask, jsonify, request
 import flask
 import os
+import json
 df =  pd.read_csv("final3.csv")
 df1 = df.copy()
 app = Flask(__name__)
@@ -64,6 +65,7 @@ template  = '''
      *Things to remember:*
     generate the FAQs by extracting theme from the sample FAQs
     Don't haloginate apart from the given data
+    Give me the data in json format of productDescrption:<from data>, FAQs :<from data>
     '''
 client =  OpenAI(api_key=key)
 
@@ -96,10 +98,7 @@ def generator(line =None):
         )   
         res  = model.choices[0].message.content
         # print(res)
-        return jsonify({
-                "product line": line,
-                "FAQ's": res,
-            })
+        return jsonify(json.loads(res))
     except :
         jsonify({
 
