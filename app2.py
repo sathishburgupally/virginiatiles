@@ -4,13 +4,14 @@ import fitz
 import requests
 from flask import Flask, jsonify, request
 import flask
-import os
 import json
 from flask_cors import CORS
-df =  pd.read_csv("final3.csv")
-df1 = df.copy()
+import os
 app = Flask(__name__)
 CORS(app) 
+df =  pd.read_csv("final3.csv")
+df1 = df.copy()
+
 key  =os.environ.get("OPENAI_API_KEY")
 
 template  = '''
@@ -66,14 +67,24 @@ template  = '''
      *Things to remember:*
     generate the FAQs by extracting theme from the sample FAQs
     Don't haloginate apart from the given data
-    Give me the data in json format of productDescrption:<from data>, FAQs :<from data>
+    Give me the data in json formate of productDescrption:<from data>, FAQs :<from data>
     '''
 client =  OpenAI(api_key=key)
-
-@app.route('/generate', methods=['GET'])
-def generator(line =None):
+actul_token = "vamsiswaroopadvaitlabschanakya"
+@app.route('/generate', methods=['POST'])
+def generator(line =None,token=None):
     try :
-        line = flask.request.args.get('line')
+        data = flask.request.get_json()
+        line  = data.get('line')
+        # print(line)
+        # token = flask.request.args.get('token')
+        token = data.get('token')
+        if token ==None:
+            return jsonify({
+                'response' : 'No token found' })
+        if token!=actul_token :
+            return jsonify({'response':'Please provide valid token'})
+        
         if line in df1["product-lines"].to_list():
             link  = df1["product_line_literature"][df1["product-lines"]==line]
         else :
@@ -106,4 +117,4 @@ def generator(line =None):
             'response' : 'An error occured please try again later'
         })    
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True,host='0.0.0.0',port=8000)
