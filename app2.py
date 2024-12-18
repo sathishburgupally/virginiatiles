@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app) 
 df =  pd.read_csv("final3.csv")
 df1 = df.copy()
-
+api_key = '2e6c47ed-886e-4293-849c-ebbd192da1da' #zerogpt
 key  =os.environ.get("OPENAI_API_KEY")
 
 template  = '''
@@ -76,8 +76,6 @@ def generator(line =None,token=None):
     try :
         data = flask.request.get_json()
         line  = data.get('line')
-        # print(line)
-        # token = flask.request.args.get('token')
         token = data.get('token')
         if token ==None:
             return jsonify({
@@ -115,6 +113,68 @@ def generator(line =None,token=None):
         jsonify({
 
             'response' : 'An error occured please try again later'
-        })    
+        })
+
+@app.route("/aiscore",methods=["POST"])    
+def Aiscore(text =None):
+    data =  flask.request.get_json()
+    # print(data)
+    text = data.get('faqs')
+    # print(text)
+    if not text:
+        return jsonify({'response':'No FAQs found'})
+    else :
+         # zerGPT
+        try :
+            url = "https://api.zerogpt.com/api/detect/detectText"
+            headers = {
+            "ApiKey": api_key,
+            "Content-Type": "application/json"
+        }
+            data = { "input_text": text}
+
+            response = requests.post(url, headers=headers, json=data)
+            return jsonify({'Fake percentage':response.json()})
+        except :
+            return jsonify({"response":"An error occured please contact developer"})
+
+@app.route('/grammarCheck', methods=['POST'])
+def grammar_check():
+    try:
+        # Get the JSON data from the request
+        data = request.get_json()
+        
+        # Ensure 'string' is provided in the request body
+        text = data.get('string')
+        if not text:
+            return jsonify({'response': 'No text provided for grammar check'}), 400
+
+        # Define API URL and headers
+        url = "https://api.zerogpt.com/api/transform/grammarCheck"
+        headers = {
+            "Content-Type": "application/json",
+            "ApiKey": api_key,
+        }
+
+        # Define the payload with only the 'string' field
+        payload = {
+            "string": text
+        }
+
+        # Make the POST request to ZeroGPT API
+        response = requests.post(url, headers=headers, json=payload)
+
+        # Check if the response is successful
+        if response.status_code == 200:
+            return jsonify(response.json()), 200
+        else:
+            return jsonify({'response': f'Error from ZeroGPT API: {response.status_code}'}), 500
+
+    except Exception as e:
+        # Log the error and return a message
+        print(f"Error: {e}")
+        return jsonify({'response': 'An error occurred. Please try again later.'}), 500
+
+
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0',port=8000)
