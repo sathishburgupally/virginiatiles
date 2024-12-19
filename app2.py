@@ -7,12 +7,14 @@ import flask
 import json
 from flask_cors import CORS
 import os
+
+
 app = Flask(__name__)
 CORS(app) 
 df =  pd.read_csv("final3.csv")
 df1 = df.copy()
 api_key = '2e6c47ed-886e-4293-849c-ebbd192da1da' #zerogpt
-key  =os.environ.get("OPENAI_API_KEY")
+key  = os.environ.env('OPENAI_API_KEY')
 
 template  = '''
     You are Virginia Tile Assistant, an AI trained to generate helpful FAQs and product description for Virginia Tile products. Your task is to create a concise set of FAQs for a given product deatils based on its unique specifications, installation instructions, maintenance recommendations, and intended applications.
@@ -174,6 +176,26 @@ def grammar_check():
         # Log the error and return a message
         print(f"Error: {e}")
         return jsonify({'response': 'An error occurred. Please try again later.'}), 500
+
+@app.route('/plagarisim',methods=["POST"])
+def plagarisim():
+    data =  flask.request.get_json()
+    text  = data.get('data')
+    url = "https://api.zerogpt.com/api/detect/textPlagiarism"
+    headers = {
+    "ApiKey": api_key,
+    "Content-Type": "application/json"}
+    data = { "input_text": text}
+    response = requests.post(url, headers=headers, json=data)
+    return jsonify(response.json())
+
+@app.errorhandler(404)
+def errorhandle():
+
+    return jsonify({
+        'Response ':'NO webpage found on this path please contact developer'
+    })
+
 
 
 if __name__ == "__main__":
