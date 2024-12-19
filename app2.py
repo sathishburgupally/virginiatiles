@@ -14,7 +14,7 @@ CORS(app)
 df =  pd.read_csv("final3.csv")
 df1 = df.copy()
 api_key = '2e6c47ed-886e-4293-849c-ebbd192da1da' #zerogpt
-key  = os.environ.env('OPENAI_API_KEY')
+key  = os.environ.get('OPENAI_API_KEY')
 
 template  = '''
     You are Virginia Tile Assistant, an AI trained to generate helpful FAQs and product description for Virginia Tile products. Your task is to create a concise set of FAQs for a given product deatils based on its unique specifications, installation instructions, maintenance recommendations, and intended applications.
