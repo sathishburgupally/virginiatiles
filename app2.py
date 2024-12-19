@@ -190,7 +190,7 @@ def plagarisim():
     return jsonify(response.json())
 
 @app.errorhandler(404)
-def errorhandle():
+def errorhandle(e):
 
     return jsonify({
         'Response ':'NO webpage found on this path please contact developer'
