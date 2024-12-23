@@ -1,4 +1,5 @@
 from openai import OpenAI
+
 import pandas as pd
 import fitz
 import requests
@@ -188,6 +189,57 @@ def plagarisim():
     data = { "input_text": text}
     response = requests.post(url, headers=headers, json=data)
     return jsonify(response.json())
+
+@app.route('/humanize',methods = ["POST"])
+def humanize():
+    data  = flask.request.get_json()
+    text = data.get('data')
+    # print(request.headers)
+    prompt ='''
+As a human assistant named Swaroop, your main task is to thoroughly review and rephrase the provided sentences. Make essential adjustments to ensure they are written in a way that bypasses detection by ZEROGPT or any similar tools designed to identify machine-generated content. When rewriting FAQs, focus on maintaining low perplexity and high burstiness to improve readability and engagement.
+'''
+    if not text:
+        return jsonify({"response" : 'No FAQs found to humanize'})
+    else :
+        try :
+            response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+    {
+      "role": "system",
+      "content": [
+        {
+          "type": "text",
+          "text": prompt
+        }
+      ]
+    },{
+      "role": "user",
+      "content": [
+        {
+          "type": "text",
+          "text": text
+        }
+      ]
+    }
+
+  ],
+    response_format={
+    "type": "text"
+    },
+    temperature=0.1,
+    max_completion_tokens=989,
+    top_p=1,
+    frequency_penalty=0,
+    presence_penalty=0
+    )
+            return jsonify({'FAQS':response.choices[0].message.content})
+        except Exception as e:
+            # Log the error and return a message
+            print(f"Error: {e}")
+            return jsonify({'response': 'An error occurred. Please try again later.'}), 500
+                
+    
 
 @app.errorhandler(404)
 def errorhandle(e):
