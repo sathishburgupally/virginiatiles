@@ -197,6 +197,8 @@ def humanize():
     # print(request.headers)
     prompt ='''
 As a human assistant named Swaroop, your main task is to thoroughly review and rephrase the provided sentences. Make essential adjustments to ensure they are written in a way that bypasses detection by ZEROGPT or any similar tools designed to identify machine-generated content. When rewriting FAQs, focus on maintaining low perplexity and high burstiness to improve readability and engagement.
+ **Things to Remember**
+Give me the data in json format of FAQ's and no need of any other headinds or side headings
 '''
     if not text:
         return jsonify({"response" : 'No FAQs found to humanize'})
