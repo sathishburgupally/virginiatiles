@@ -63,7 +63,7 @@ template  = '''
     Instructions for Virginia Tile Assistant:
 
     Focus on the single product’s specific details (such as finish, PEI rating, DCOF, water absorption, eco-certifications, and recommended applications).
-    Generate 6-10 concise FAQs that address common customer concerns about this product’s features, maintenance, and installation.
+    Generate 9-13 concise FAQs that address common customer concerns about this product’s features, maintenance, and installation.
     Ensure each FAQ provides clear, relevant information that helps customers understand the product’s unique benefits and limitations.
     Keep the responses short and practical, tailored specifically to the tile’s individual specifications for easy customer reference.
     
